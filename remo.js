@@ -1,8 +1,12 @@
 const { default: fetch } = require("node-fetch")
 const fs = require('fs');
 
-
+/**@class RemOnlineClient*/
 class RemOnlineClient {
+    /**@constructor
+     * @param {String} apiKeyPath - path to file .JSON with apiKey in JSON ({"apiKey": "xxxxxx"})
+     * @param {String} apiTokenPath - path to file .JSON where will be stored apiToken (will be create automatically in specified adress)
+     */
     constructor(apiKeyPath, apiTokenPath) {
         this._apiKeyPath = apiKeyPath;
         this._apiTokenPath = apiTokenPath
@@ -57,8 +61,6 @@ class RemOnlineClient {
             result = await this._refreshToken()
                 .then(() => {
                     url = this._baseUrl + methodsUrl + `?token=${this._token}` + paramsStr + remArrParams;
-                    console.log("ЕЩЕ РАЗ УРЛ", url);
-                    console.log("ЕЩЕ РАЗ БОДИ", options);
                     return fetch(encodeURI(url), options)
                 })
                 .then(response => {
@@ -108,9 +110,14 @@ class RemOnlineClient {
         return response.data
     }
 
-    /**@method getOrdersById(...ids)
-     * @param  {String|Number | [String|Number]} orderIds
+    /**@method getOrdersById(ids)
+     * @param  {String|Number} orderIds may be Array of them
      * @returns {Array} Array of orders (Promise)
+     * @example //get order from Remonline by id
+     * const Remo = new RemOnlineClient(__dirname + "//apiKey.json", __dirname + "//apiToken.json")
+     * .getOrdersById(7777777)
+     * .then(ArrayWithOrder => console.log(ArrayWithOrder))
+     * .catch(err => console.log(err))
      */
     async getOrdersById(...ids) {
         if (ids[0].length) ids = ids[0]
@@ -127,6 +134,11 @@ class RemOnlineClient {
 
     /**@method getStatuses() for get list of statuses in your account
      * @returns {Array} array with statuses (Promise)
+     * @example //get list of statuses in account
+     * const remo = new RemOnlineClient(__dirname + "//apiKey.json", __dirname + "//apiToken.json")
+     * .getStatuses()
+     * .then(arrayWithStatuses => console.log(arrayWithStatuses))
+     * .catch(err => console.log(err))
      */
     async getStatuses() {
         let response = await this._request({
@@ -140,6 +152,11 @@ class RemOnlineClient {
      * @param {String|Number} phone string or number, may be array of them for find client in remonline
      * @returns {Object|undefined} client (object), first client of list with specified phone (Promise)
      * if client not founded (or not exists) - returns undefined
+     * @example //get first client in founded list (find by phone number)
+     * const remo = new RemOnlineClient(__dirname + "//apiKey.json", __dirname + "//apiToken.json")
+     * .getClientByPhone(79157877757) // or "+79157877757" or other variants
+     * .then(client => console.log(client))
+     * .catch(err => console.log(err))
      */
     async getClientByPhone(...phone) {
         if (Array.isArray(phone[0])) phone = phone[0]
@@ -151,10 +168,15 @@ class RemOnlineClient {
         return contactData.data[0]
     }
 
-    /**@method createClient({ name, phone }) creating new client in remonline with specified name and phone
+    /**@method createClient(options) creating new client in remonline with specified name and phone
      * @param {String} client.name name of new client
      * @param {Number} client.phone phone number of new client
      * @returns {Number} clientId (Promise)
+     * @example //create new client in remonline with specified name and phone
+     * const remo = new RemOnlineClient(__dirname + "//apiKey.json", __dirname + "//apiToken.json")
+     * .createClient({name: "Vasya", phone: 79157877757})
+     * .then(newClientId => console.log(newClientId))
+     * .catch(err => console.log(err))
      */
     async createClient({ name, phone }) {
         return await this._request({
@@ -176,6 +198,21 @@ class RemOnlineClient {
     /**@method createNewOrder(orderData) for create new order in remonline
      * @param {Object} orderData - read documentation for build this object: https://remonline.ru/docs/api/#apisection11_22
      * @returns {Number} newOrderId (Promise)
+     * @example //create new order in remonline in specified branch
+     * const remo = new RemOnlineClient(__dirname + "//apiKey.json", __dirname + "//apiToken.json")
+     * 
+     * let orderData = {
+     *branch_id: 21464, //id of branch in remonline
+     *order_type: 36099, //id of order type
+     *kindof_good: 'iPhone', //type of good (String)
+     *model: 'test-test-test', // name of goods model (String)
+     *malfunction: 'Description', //description of malfunction (String)
+     *estimated_cost: '1500', 
+     *manager_notes: 'notes from manager'
+     *}
+     * remo.createNewOrder({orderData})
+     * .then(newOrderId => console.log(newOrderId))
+     * .catch(err => console.log(err))
      */
     async createNewOrder(orderData) {
         let response = await this._request({

@@ -1,0 +1,27 @@
+{
+  "name": "remamo-client",
+  "version": "1.0.0",
+  "description": "api client for working with remonline by api. Allows you for get/create orders and clients and get branches and statuses",
+  "main": "remo.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mityayka1/RemonlineClient.git"
+  },
+  "keywords": [
+    "api",
+    "remonline",
+    "node"
+  ],
+  "author": "mityaka1 <expert@GoogleSheets.ru>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mityayka1/RemonlineClient/issues"
+  },
+  "homepage": "https://github.com/mityayka1/RemonlineClient#readme",
+  "dependencies": {
+    "jsdoc": "^3.6.5"
+  }
+}
