@@ -31,10 +31,11 @@ class RemOnlineClient {
         let url = `${this._baseUrl}${methodsUrl}?token=${this._token}`;
         
         let resultParams = {};
+        // формируем общий массив параметров для запроса
         Object.assign(resultParams, params, remArrValues[0]);
         
-        let paramsStr = Object.entries(resultParams).map(([key, val]) => `${key}=${val}`).join('&');
-        if(paramsStr) url += `&${paramsStr}`;
+        let paramsStr = Object.entries(resultParams).map(([key, val] = el) => `${key}=${val}`).join('&');
+        if(paramsStr) url = `${url}&${paramsStr}`;
 
         let options = {
             method: method.toUpperCase(),
