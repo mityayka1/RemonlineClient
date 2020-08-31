@@ -26,7 +26,7 @@ class RemOnlineClient {
      * @param {Object} [options.params] - object with url params, make string "key1=value1&key2=value2" and concat to url
      * @returns {Object} object with response from remonline api
      */
-    async _request({ method, methodsUrl, params = {}, body = "", remArrValues = {}}) {
+    async _request({ method, methodsUrl, params = {}, body = "", remArrValues = []}) {
         
         let url = `${this._baseUrl}${methodsUrl}?token=${this._token}`;
         
